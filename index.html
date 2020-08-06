@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/4.3.1/sketchy/bootstrap.min.css">
+    <title>CRUD FIRESTORE</title>
+</head>
+<body>
+    <h1>App de personajes con firestore,reglas y Auth</h1>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item ">
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#iniciarSesionModal" id="navSesion">Iniciar sesión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#registrarseModal" id="navRegistrarse">Registrarse</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="cerrarSesion">Cerrar sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- fin navbar -->
+        <div class="row">
+            <div class="col-lg-6 offset-lg-3 offset-md-1 my-3" id="autenticado">
+                <form id="fPersonajes">
+                    <div class="form-group">
+                        <label for="personaje">Personaje</label>
+                        <input type="text" id="personaje" class="form-control" placeholder="coloca tu personaje" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" class="form-control" placeholder="coloca su nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido">Apellido</label>
+                        <input type="text" id="apellido" class="form-control" placeholder="coloca su apellido">
+                    </div>
+                    <button type="submit" class="btn-primary">Enviar</button>
+                </form>
+            </div>
+            <!-- fin formulario -->
+        </div>
+        <div class="row" id="contenedor"></div>
+        <!-- fin targetas -->
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="iniciarSesionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Iniciar sesíon</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="fIniciarSesion">
+                        <div class="form-group">
+                            <label for="iCorreo">Correo</label>
+                            <input type="text" id="iCorreo" placeholder="Coloca tu correo" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="iContraseña">Contraseña</label>
+                            <input type="text" id="iContraseña" placeholder="Coloca tu contraseña" class="form-control">
+                        </div>
+                        <button class="btn btn-primary" type="submit">Iniciar sesión</button>
+                    </form>
+                    <button type="button" class="btn btn-danger my-2" id="iniciarGoogle" type="button">Iniciar sesión con Google</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="registrarseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Registrarse</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="fRegistrarse">
+                        <div class="form-group">
+                            <label for="rCorreo">Correo</label>
+                            <input type="text" id="rCorreo" placeholder="Coloca tu correo" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="rContraseña">Contraseña</label>
+                            <input type="text" name="" id="rContraseña" placeholder="Coloca tu contraseña" class="form-control">
+                        </div>
+                        <button class="btn btn-primary my-1" type="submit">Registrarse</button>
+                    </form>
+                    <div><button class="btn btn-danger my-1" id="registraseGoogle" type="button">Registrarse con Google</button></div>
+                    <div><button class="btn btn-secondary my-1" id="anonimo" type="button">Registrarse con Usuario anonimo</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="actualizarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <label>Actualizar personaje</label>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label class="modal-title" id="labelId"></label>
+                    <form id="fActualizar">
+                        <div class="form-group">
+                            <label for="aPersonaje">Personaje</label>
+                            <input type="text" id="aPersonaje" class="form-control" placeholder="coloca tu personaje">
+                        </div>
+                        <div class="form-group">
+                            <label for="aNombre">Nombre</label>
+                            <input type="text" id="aNombre" class="form-control" placeholder="coloca su nombre">
+                        </div>
+                        <div class="form-group">
+                            <label for="aApellido">Apellido</label>
+                            <input type="text" id="aApellido" class="form-control" placeholder="coloca su apellido">
+                        </div>
+                        <button type="submit" class="btn-success">Enviar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- fin modal -->
+    
+    <!-- bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
+    
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
+
+    <script src="confi.js"></script>
+    <!-- <script src="autenticar.js"></script> -->
+    <script src="app.js"></script>
+</body>
+</html>

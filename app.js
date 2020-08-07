@@ -121,19 +121,38 @@ fIniciar.addEventListener("submit",(e)=>{
             console.warn("atrape el error", error, message)
         });
 })
-function sesionIniciada(user){
-    console.log("sesion iniciada,objeto user: ", user)
-        console.log("objeto user: ", user.email)
-        db.collection("personajes").doc(user.uid).get()
-            .then(doc => {
-                console.log(doc.id, "=>", doc.data())
-            })
-            .catch(error => {
-                console.warn("atrape el error", error)
-            });
-        
-            uid = user.uid
-            verSiempre()
+function sesionIniciada(user) {
+    // console.log("sesion iniciada,objeto user: ", user)
+    // console.log("objeto user: ", user.email)
+    db.collection("personajes").doc(user.uid).get()
+        .then(doc => {
+            console.log(doc.id, "=>", doc.data())
+        })
+        .catch(error => {
+            console.warn("atrape el error", error)
+        });
+    agregarCredencial(user)
+
+    uid = user.uid
+    verSiempre()
+}
+function agregarCredencial(user) {
+    db.collection("personajes").doc(user.uid).set({
+        nombre: user.displayName,
+        correo: user.email,
+        creacion: new Date(user.metadata.creationTime),
+        ultimaEntrada: new Date(user.metadata.lastSignInTime),
+        correoVerificado: user.emailVerified,
+        esAnonimo: user.isAnonymous,
+        telefono: user.phoneNumber,
+        imagen: user.photoURL,
+    })
+        .then(() => {
+            console.log("Document written")
+        })
+        .catch(error => {
+            console.warn("atrape el error", error)
+        });
 }
 //funciones
 {
@@ -284,57 +303,4 @@ fActualizar.addEventListener("submit", (e) => {
             console.error("Error updating document: ", error);
         })
 })
-{
-    /* personajesRef.get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-        console.log(doc.id,"=>", doc.data());
-    });
-});  */
 
-/* db.collectionGroup("personajes").get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-        console.log(doc.id,doc.data());
-    });
-}); */
-
-/* personajesRef
-.onSnapshot(function(snapshot) {
-    snapshot.docChanges().forEach(function(change) {
-        if (change.type === "added") {
-            console.log("New city: ", change.doc.data());
-        }
-        if (change.type === "modified") {
-            console.log("Modified city: ", change.doc.data());
-        }
-        if (change.type === "removed") {
-            console.log("Removed city: ", change.doc.data());
-        }
-    });
-}); */
-
-    /* personajesRef.where("capital", "==", true)
-    .get()
-    .then(function(querySnapshot) {
-        querySnapshot.forEach(function(doc) {
-            // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
-        });
-    })
-    .catch(function(error) {
-        console.log("Error getting documents: ", error);
-    });
- */
-// personajesRef.where("country", "==", "USA").orderBy("population", "asc")
-// personajesRef.limit(2)
-
-/* db.collection("cities").orderBy("population").startAt(1000000).get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-        console.log(doc.id,"=>",doc.data());
-    });
-});
-db.collection("cities").orderBy("population").endAt(1000000).get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-        console.log(doc.id,"=>",doc.data());
-    });
-}); */
-}
